@@ -54,7 +54,7 @@ class NeuralNetwork(object):
         #### Implement the forward pass here ####
         ### Forward pass ###
         # TODO: Hidden layer - Replace these values with your calculations.
-        hidden_inputs = np.dot(self.input_nodes, self.weights_input_to_hidden) # signals into hidden layer
+        hidden_inputs = np.dot(X, self.weights_input_to_hidden) # signals into hidden layer
         hidden_outputs = self.activation_function(hidden_inputs) # signals from hidden layer
 
         # TODO: Output layer - Replace these values with your calculations.
@@ -79,19 +79,20 @@ class NeuralNetwork(object):
 
         # TODO: Output error - Replace this value with your calculations.
         error = y - final_outputs # Output layer error is the difference between desired target and actual output.
+
+        # TODO: Backpropagated error terms - Replace these values with your calculations.
+        output_error_term = error * final_outputs * (1 - final_outputs)
         
         # TODO: Calculate the hidden layer's contribution to the error
-        hidden_error = None
+        hidden_error = output_error_term * self.weights_hidden_to_output
         
-        # TODO: Backpropagated error terms - Replace these values with your calculations.
-        output_error_term = None
-        
-        hidden_error_term = None
+        hidden_error_term = hidden_error.T * hidden_outputs * (1 - hidden_outputs)
         
         # Weight step (input to hidden)
-        delta_weights_i_h += None
+        delta_weights_i_h += (hidden_error_term * X.T[:,None])
         # Weight step (hidden to output)
-        delta_weights_h_o += None
+        delta_weights_h_o += (output_error_term * hidden_outputs).T[:,None]
+        print(error)
         return delta_weights_i_h, delta_weights_h_o
 
     def update_weights(self, delta_weights_i_h, delta_weights_h_o, n_records):
